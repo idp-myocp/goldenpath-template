@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: LimitRange
+metadata:
+  name: ${{ values.repository_name }}-limit-range
+  annotations:
+    app.kubernetes.io/component: backstage
+    backstage.io/kubernetes-id: ${{ values.namespace }}
+spec:
+  limits:
+  - default:
+      cpu: ${{ values.default_cpu }}m
+      memory: ${{ values.default_memory }}Mi
+    defaultRequest:
+      cpu: ${{ values.default_request_cpu }}m
+      memory: ${{ values.default_request_memory }}Mi
+    type: Container

@@ -1,0 +1,10 @@
+apiVersion: backstage.io/v1alpha1
+kind: Location
+metadata:
+  name: idp-myocp-gpt-collection
+  description: A collection of Backstage Golden Path
+spec:
+  type: url
+  targets:
+    - https://github.com/idp-myocp/goldenpath-template/blob/main/templates/argocd-kubegreen/template.yaml
+    - https://github.com/idp-myocp/goldenpath-template/blob/main/templates/quarkus-service/template.yaml

@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: ${{ values.repository_name }}-resource-quota
+  annotations:
+    app.kubernetes.io/component: backstage
+    backstage.io/kubernetes-id: ${{ values.namespace }}
+spec:
+  hard:
+    requests.cpu: "${{ values.request_cpu }}"
+    requests.memory: ${{ values.request_memory }}Gi
+    limits.cpu: "${{ values.limits_cpu }}"
+    limits.memory: ${{ values.limits_memory }}Gi
+    pods: "${{ values.pods}}"

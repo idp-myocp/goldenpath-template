@@ -1,0 +1,308 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: openshift-project-argocd
+  title: OpenShift Project with ArgoCD
+  description: Template to create a project with quotas, limits and SleepInfo for openshift using ArgoCD
+  tags:
+    - gitpps
+    - openshift
+spec:
+  owner: idp-myocp
+  system: idp-myocp
+  type: service
+
+  parameters:
+    - title: Provide Information for Project
+      required:
+        - component_id
+        - owner
+      properties:
+        component_id:
+          title: Name
+          type: string
+          description: Unique name of the component
+          ui:field: EntityNamePicker
+        description:
+          title: Description
+          type: string
+          description: Help others understand what this website is for.
+        owner:
+          title: Owner
+          type: string
+          description: IdP owner of the component
+          default: idp-myocp
+          ui:field: OwnerPicker
+          ui:options:
+            allowedKinds:
+              - Group
+    - title: Provide Quotas for Project
+      properties:
+        request_cpu:
+          title: Request CPU
+          type: integer
+          description: The sum of CPU cannot that can't be exceed accross all pods.
+          enum:
+            - 1
+            - 2
+            - 5
+          enumNames: 
+            - Small
+            - Medium
+            - Large
+        request_memory:
+          title: Request Memory
+          type: integer
+          description: The sum of memory that can't be exceed accross all pods. In Gi
+          enum:
+            - 1
+            - 2
+            - 10
+          enumNames: 
+            - Small
+            - Medium
+            - Large
+        limits_cpu:
+          title: Limits CPU
+          type: integer
+          description: The sum of CPU  cannot exceed this value accross all pods.
+          enum:
+            - 2
+            - 3
+            - 6
+          enumNames: 
+            - Small
+            - Medium
+            - Large
+        limits_memory:
+          title: Limits Memory
+          type: integer
+          description: The sum of Memory  cannot exceed this value accross all pods. In Gi
+          enum:
+            - 2
+            - 4
+            - 20
+          enumNames: 
+            - Small
+            - Medium
+            - Large
+        pods:
+          title: Pods
+          type: integer
+          description: The sum of Pods that can exist in the namespace.
+          enum:
+            - 10
+            - 20
+            - 40
+          enumNames: 
+            - Small
+            - Medium
+            - Large
+    - title: Provide Limits Range for Container in Project
+      properties:
+        default_cpu:
+          title: Default CPU Limit
+          type: integer
+          enum:
+            - 200
+            - 500
+            - 1000
+          enumNames: 
+            - Small
+            - Medium
+            - Large
+        default_memory:
+          title: Default Memory Limit
+          type: integer
+          enum:
+            - 256
+            - 512
+            - 1024
+          enumNames: 
+            - Small
+            - Medium
+            - Large
+        default_request_cpu:
+          title: Default Request CPU Limit
+          type: integer
+          enum:
+            - 100
+            - 200
+            - 500
+          enumNames: 
+            - Small
+            - Medium
+            - Large
+        default_request_memory:
+          title: Default Request Memory Limit
+          type: integer
+          enum:
+            - 256
+            - 512
+            - 1024
+          enumNames: 
+            - Small
+            - Medium
+            - Large
+    - title: Provide resource runtime information for Project
+      properties:
+        weekdays:
+          title: Week days to apply the schedual
+          type: string
+          enum:
+            - "*"
+            - 1-5
+            - 6-7
+          enumNames: 
+            - Everyday
+            - Monday - Friday
+            - Saturday - Sunday
+        sleepAt:
+          title: Set the time at which to shutdown the resources
+          type: string
+          enum:
+            - "18:00"
+            - "19:00"
+            - "20:00"
+            - "21:00"
+            - "22:00"
+            - "23:00"
+          enumNames: 
+            - "18:00"
+            - "19:00"
+            - "20:00"
+            - "21:00"
+            - "22:00"
+            - "23:00"
+        wakeUpAt:
+          title: Set the time at which to start the resources
+          type: string
+          enum:
+            - "03:00"
+            - "04:00"
+            - "05:00"
+            - "06:00"
+            - "07:00"
+            - "08:00"
+          enumNames: 
+            - "03:00"
+            - "04:00"
+            - "05:00"
+            - "06:00"
+            - "07:00"
+            - "08:00"
+        timeZone:
+          title: Set the time timeZone to use (IANA format)
+          type: string
+          enum:
+            - "Etc/UTC"
+            - "America/Halifax"
+            - "America/Toronto"
+            - "America/Vancouver"
+          enumNames: 
+            - "Universal"
+            - "Canada Atlantique"
+            - "Canada Eastern"
+            - "Canada Pacific"
+    - title: Provide Repository Information for Project
+      required:
+        - repoUrl
+      properties:
+        repoUrl:
+          title: Repository Location
+          type: string
+          ui:field: RepoUrlPicker
+          ui:options:
+            allowedHosts:
+              - github.com
+
+  steps:
+    - id: template
+      name: Generating component
+      action: fetch:template
+      input:
+        url: ./skeleton
+        copyWithoutTemplating: []
+        values:
+          component_id: ${{ parameters.component_id }}
+          namespace: ${{ parameters.component_id }}-dev
+          description: ${{ parameters.description }}
+          owner: ${{ parameters.owner }}
+          cluster: .apps.home.myocp.net
+          destination: ${{ (parameters.repoUrl | parseRepoUrl).owner }}/${{ (parameters.repoUrl | parseRepoUrl).repo }}
+          port: 8080
+
+    - id: publish
+      name: Publishing to Source Code Repository
+      action: publish:github
+      input:
+        description: This is ${{ parameters.component_id }}
+        repoUrl: ${{ parameters.repoUrl }}
+        defaultBranch: main
+        protectDefaultBranch: false
+        repoVisibility: public
+
+    - id: register
+      name: Registering to the Catalog
+      action: catalog:register
+      input:
+        repoContentsUrl: ${{ steps.publish.output.repoContentsUrl }}
+        catalogInfoPath: '/catalog-info.yaml'
+
+    - id: template-gitops-deployment
+      name: Generating Deployment Resources
+      action: fetch:template
+      input:
+        url: ./manifests
+        copyWithoutTemplating: []
+        values:
+          component_id: ${{ parameters.component_id }}
+          description: ${{ parameters.description }}
+          destination: https://github.com/${{ (parameters.repoUrl | parseRepoUrl).owner }}/${{ (parameters.repoUrl | parseRepoUrl).repo }}-gitops
+          source_repository: https://github.com/${{ (parameters.repoUrl | parseRepoUrl).owner }}/${{ (parameters.repoUrl | parseRepoUrl).repo }}
+          repository_name: ${{ (parameters.repoUrl | parseRepoUrl).repo }}
+          git_owner: ${{ (parameters.repoUrl | parseRepoUrl).owner }}
+          cluster: .apps.home.myocp.net
+          namespace: ${{ parameters.component_id }}-dev
+          request_cpu: ${{ parameters.request_cpu}}
+          request_memory: ${{ parameters.request_memory}}
+          limits_cpu: ${{ parameters.limits_cpu}}
+          limits_memory: ${{ parameters.limits_memory}}
+          default_cpu: ${{ parameters.default_cpu}}
+          default_memory: ${{ parameters.default_memory}}
+          default_request_cpu: ${{ parameters.default_request_cpu}}
+          default_request_memory: ${{ parameters.default_request_memory}}
+          pods: ${{ parameters.pods}}
+          weekdays: ${{ parameters.weekdays}}
+          sleepAt: ${{ parameters.sleepAt}}
+          wakeUpAt: ${{ parameters.wakeUpAt}}
+          timeZone: ${{ parameters.timeZone}}
+        targetPath: ./tenant-gitops
+
+    - id: publish-gitops
+      name: Publishing to Resource Repository
+      action: publish:github
+      input:
+        repoUrl: github.com?repo=${{ (parameters.repoUrl | parseRepoUrl).repo }}-gitops&owner=${{ (parameters.repoUrl | parseRepoUrl).owner }}
+        title: gitops resources for ${{ parameters.component_id }}
+        description: gitops resources for ${{ parameters.component_id }}
+        sourcePath: ./tenant-gitops
+        repoVisibility: public
+
+    - id: create-argocd-resources
+      name: Create ArgoCD Resources
+      action: argocd:create-resources
+      input:
+        appName: ${{ parameters.component_id }}-bootstrap
+        argoInstance: main
+        namespace: janus-argocd
+        repoUrl: https://github.com/${{ (parameters.repoUrl | parseRepoUrl).owner }}/${{ (parameters.repoUrl | parseRepoUrl).repo }}-gitops.git
+        path: 'argocd/'
+
+  output:
+    links:
+      - title: Source Code Repository
+        url: ${{ steps.publish.output.remoteUrl }}
+      - title: Open Component in catalog
+        icon: catalog
+        entityRef: ${{ steps.register.output.entityRef }}
