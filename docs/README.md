@@ -6,4 +6,5 @@ Here how to [Get stated](https://backstage.io/docs/features/software-templates/)
 
 This repository provided the following Golden Path/Software Template
 
-1. 
+1. [Argocd with Kube-Green](../templates/argocd-kubegreen/README.md)
+1. [Quarkus Service with CI/CD](../templates/quarkus-service/README.md)
