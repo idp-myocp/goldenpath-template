@@ -7,9 +7,12 @@ metadata:
   {%- endif %}
   annotations:
     argocd/app-name: ${{values.artifactId}}-dev
-    janus-idp.io/tekton-enabled : 'true'
+    janus-idp.io/tekton-enabled : 'false'
     github.com/project-slug: ${{values.githubOrg}}/${{values.repoName}}
     backstage.io/techdocs-ref: dir:.
+    jira/project-key: ISSUEBD
+    jfrog-artifactory/image-name: ${{values.repoName}}
+
   tags:
     - java
     - quarkus
