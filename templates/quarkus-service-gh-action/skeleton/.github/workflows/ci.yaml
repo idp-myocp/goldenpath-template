@@ -6,8 +6,8 @@ on:
       - main
 
 env:
-  IMAGE_NAME: ${{ github.event.repository.name }}
-  IMAGE_TAGS: latest ${{ github.sha }}
+  IMAGE_NAME: ""
+  IMAGE_TAGS: ""
   IMAGE_REGISTRY: quay.io
   IMAGE_NAMESPACE: ${{ secrets.REGISTRY_NAMESPACE }}
   USERNAME: ${{ secrets.REGISTRY_USERNAME }}
@@ -15,7 +15,10 @@ env:
 
 jobs:
   build-and-push-image:
+    name: Build and Create image
     runs-on: ubuntu-latest
+    environment: production
+
     permissions:
       contents: read
       packages: write
@@ -23,6 +26,16 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+
+      - name: Determine Image name
+        if: env.IMAGE_NAME == ''
+        run: |
+          echo "IMAGE_NAME=$(basename $PWD)" | tee -a $GITHUB_ENV
+
+      - name: Determine image tags
+        if: env.IMAGE_TAGS == ''
+        run: |
+          echo "IMAGE_TAGS=${GITHUB_SHA::12}" | tee -a $GITHUB_ENV
 
       - name: Build Image
         id: build-image
