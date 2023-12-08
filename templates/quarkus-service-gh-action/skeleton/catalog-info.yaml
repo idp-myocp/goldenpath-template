@@ -1,12 +1,12 @@
 apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
-  name: ${{values.artifactId | dump}}
+  name: ${{values.repoName| dump}}
   {%- if values.description %}
   description: ${{values.description | dump}}
   {%- endif %}
   annotations:
-    argocd/app-name: ${{values.artifactId}}-dev
+    argocd/app-name: ${{values.repoName}-dev
     janus-idp.io/tekton-enabled : 'false'
     github.com/project-slug: ${{values.githubOrg}}/${{values.repoName}}
     backstage.io/techdocs-ref: dir:.
