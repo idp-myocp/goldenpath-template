@@ -115,27 +115,51 @@ spec:
           artifactId: ${{ parameters.artifactId }}
           javaPackageName: ${{ parameters.javaPackageName }}
 
-    # - id: catalogTemplate
-    #   name: Generating the Catalog Info Component
-    #   action: fetch:template
-    #   input:
-    #     url: ../../scaffolder-skeletons/catalog-info-skeleton/
-    #     values:
-    #       githubOrg: ${{ parameters.githubOrg }}
-    #       repoName: ${{ parameters.repoName }}
-    #       owner: ${{ parameters.owner }}
-    #       system: ${{ parameters.system }}
-    #       applicationType: api
-    #       description: ${{ parameters.description }}
-    #       namespace: ${{ parameters.namespace }}
-    #       imageUrl: ${{ parameters.imageUrl }}
-    #       imageBuilder: s2i-java
-    #       imageRepository: ${{ parameters.imageRepository }}
-    #       port: ${{ parameters.port }}
-    #       ci: ${{ parameters.ci }}
-    #       groupId: ${{ parameters.groupId }}
-    #       artifactId: ${{ parameters.artifactId }}
-    #       javaPackageName: ${{ parameters.javaPackageName }}
+    - id: ciTemplate
+      name: Generating the CI Component
+      action: fetch:template
+      input:
+        url: ../../skeletons/gh-actions-artifactory/
+        copyWithoutTemplating:
+          - .github/workflows/
+        values:
+          githubOrg: ${{ parameters.githubOrg }}
+          repoName: ${{ parameters.repoName }}
+          owner: ${{ parameters.owner }}
+          system: ${{ parameters.system }}
+          applicationType: api
+          description: ${{ parameters.description }}
+          namespace: ${{ parameters.namespace }}
+          imageUrl: ${{ parameters.imageUrl }}
+          imageBuilder: s2i-java
+          imageRepository: ${{ parameters.imageRepository }}
+          port: ${{ parameters.port }}
+          ci: ../../skeletons/gh-actions-artifactory/
+          groupId: ${{ parameters.groupId }}
+          artifactId: ${{ parameters.artifactId }}
+          javaPackageName: ${{ parameters.javaPackageName }}
+
+    - id: catalogTemplate
+      name: Generating the Catalog Info Component
+      action: fetch:template
+      input:
+        url: ../../skeletons/catalog-info-artifactory/
+        values:
+          githubOrg: ${{ parameters.githubOrg }}
+          repoName: ${{ parameters.repoName }}
+          owner: ${{ parameters.owner }}
+          system: ${{ parameters.system }}
+          applicationType: api
+          description: ${{ parameters.description }}
+          namespace: ${{ parameters.namespace }}
+          imageUrl: ${{ parameters.imageUrl }}
+          imageBuilder: s2i-java
+          imageRepository: ${{ parameters.imageRepository }}
+          port: ${{ parameters.port }}
+          ci: ../../skeletons/gh-actions-artifactory/
+          groupId: ${{ parameters.groupId }}
+          artifactId: ${{ parameters.artifactId }}
+          javaPackageName: ${{ parameters.javaPackageName }}
 
     - id: publish
       name: Publishing to the Source Code Repository
