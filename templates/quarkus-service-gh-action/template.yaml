@@ -8,23 +8,16 @@ metadata:
     - java
     - quarkus
     - maven
-spec:
+    - 'gh action'
   owner: service@example.com
   type: service
   parameters:
     - title: Provide Information for Application
       required:
-        - owner
-        - system
-        - port
         - component_id
         - owner
         - java_package_name
       properties:
-        description:
-          title: Description
-          type: string
-          description: Help others understand what this component is for
         component_id:
           title: Name
           type: string
@@ -46,6 +39,10 @@ spec:
           default: org.redhat.janus
           type: string
           description: Name for the java package. eg (com.redhat.blah)
+        description:
+          title: Description
+          type: string
+          description: Help others understand what this website is for.
         owner:
           title: Owner
           type: string
@@ -54,11 +51,6 @@ spec:
           ui:options:
             allowedKinds:
               - Group
-        port:
-          title: Port
-          type: number
-          default: 8080
-          description: Override the port exposed for the application
     - title: Provide Image Registry Information
       required:
         - image_registry
