@@ -103,7 +103,7 @@ spec:
           repoName: ${{ parameters.repoName }}
           owner: ${{ parameters.owner }}
           system: ${{ parameters.system }}
-          applicationType: api
+          applicationType: service
           description: ${{ parameters.description }}
           namespace: ${{ parameters.namespace }}
           imageUrl: ${{ parameters.imageUrl }}
