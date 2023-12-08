@@ -1,11 +1,13 @@
-# GitHub Actions CI Method
+# GitHub Actions CI Method with Artifactory
 
 ## Requirements
 
-The GitHub Actions CI Method will require repository secrets setup before GitHub Actions can run
+The GitHub Actions CI Method with Artifactory will require repository or organization secrets setup before GitHub Actions can run
 
-CI Secrets
+### Secrets Require.
 
-- `REGISTRY_NAMESPACE` - The Quay.io registry namespace you wish to push the image to ex. quay.io/<IMAGE_NAMESPACE>/<IMAGE_NAME>:Tag
-- `REGISTRY_USERNAME` - The Quay.io registry username for the bot
-- `REGISTRY_PASSWORD` - The Quay.io registry password for the bot
+- `JF_ACCESS_TOKEN` - JFrog Artifactory access token
+- `JF_URL` - The URL of the JFROG instance
+- `REGISTRY_NAMESPACE` - The Artifactory Repository where to upload the image
+- `REGISTRY_URL` - The Registry url, usually it the JF_URL without the https
+

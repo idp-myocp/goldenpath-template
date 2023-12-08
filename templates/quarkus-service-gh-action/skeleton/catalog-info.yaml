@@ -1,30 +1,21 @@
 apiVersion: backstage.io/v1alpha1
-{%- if values.entityKind %}
-kind: ${{ values.entityKind }}
-{%- else %}
 kind: Component
-{%- endif %}
 metadata:
-  name: ${{ values.repoName }}
+  name: ${{values.artifactId | dump}}
   {%- if values.description %}
-  description: ${{ values.description }}
+  description: ${{values.description | dump}}
   {%- endif %}
   annotations:
-    {%- if values.hostUrl %}
-    argocd/app-name: ${{ values.repoName }}
-    {%- endif %}
-    backstage.io/kubernetes-id: ${{ values.repoName }}
+    argocd/app-name: ${{values.artifactId}}-dev
+    janus-idp.io/tekton-enabled : 'false'
+    github.com/project-slug: ${{values.githubOrg}}/${{values.repoName}}
     backstage.io/techdocs-ref: dir:.
-    github.com/project-slug: ${{ values.githubOrg }}/${{ values.repoName }}
     jira/project-key: ISSUEBD
-    jfrog-artifactory/image-name: ${{ values.repoName }}
+    jfrog-artifactory/image-name: ${{values.repoName}}
 
   tags:
     - java
     - quarkus
-    - gh-action
-    - artifactory
-    - argocd
   links:
     - url: https://devspaces${{values.cluster}}/#https://github.com/${{values.githubOrg}}/${{values.repoName}}?che-editor=che-incubator/che-code/insiders&devfilePath=.devfile-vscode.yaml
       title: OpenShift Dev Spaces (VS Code)
@@ -32,17 +23,23 @@ metadata:
     - url: https://devspaces${{values.cluster}}/#https://github.com/${{values.githubOrg}}/${{values.repoName}}?che-editor=che-incubator/che-idea/latest&devfilePath=.devfile-intellij.yaml
       title: OpenShift Dev Spaces (JetBrains IntelliJ)
       icon: web
-
 spec:
-  type: ${{ values.applicationType }}
-  system: ${{ values.system }}
+  type: service
   lifecycle: production
-  owner: ${{ values.owner }}
-  {%- if values.dependsOn %}
-  dependsOn:
-    - ${{ values.dependsOn }}
+  owner: ${{values.owner | dump}}
+  providesApis:
+    - ${{values.artifactId | dump}}
+---
+apiVersion: backstage.io/v1alpha1
+kind: API
+metadata:
+  name: ${{values.artifactId | dump}}
+  {%- if values.description %}
+  description: ${{values.description | dump}}
   {%- endif %}
-  {%- if values.partOf %}
-  partOf:
-    - ${{ values.partOf }}
-  {%- endif %}
+spec:
+  type: openapi
+  lifecycle: production
+  owner: ${{values.owner | dump}}
+  definition:
+    $text: ./openapi.yaml
