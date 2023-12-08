@@ -80,6 +80,7 @@ spec:
     - title: Provide information about the Continuous Integration
       required:
         - ci
+        - repoUrl
       properties:
         ci:
           title: Continuous Integration
@@ -91,6 +92,13 @@ spec:
           type: string
           description: The image registry where the image will be store
           default: Artifactory
+        repoUrl:
+          title: Repository Location
+          type: string
+          ui:field: RepoUrlPicker
+          ui:options:
+            allowedHosts:
+              - github.com
 
   steps:
     - id: template
@@ -142,6 +150,48 @@ spec:
         repoContentsUrl: ${{ steps.publish.output.repoContentsUrl }}
         catalogInfoPath: /catalog-info.yaml
 
+    - id: template-gitops-deployment
+      name: Generating Deployment Resources
+      action: fetch:template
+      input:
+        url: ./manifests
+        copyWithoutTemplating: []
+        values:
+          component_id: ${{ parameters.repoName }}
+          description: ${{ parameters.description }}
+          destination: https://github.com/${{ (parameters.repoUrl | parseRepoUrl).owner }}/${{ (parameters.repoUrl | parseRepoUrl).repo }}-gitops
+          source_repository: https://github.com/${{ (parameters.repoUrl | parseRepoUrl).owner }}/${{ (parameters.repoUrl | parseRepoUrl).repo }}
+          repository_name: ${{ (parameters.repoUrl | parseRepoUrl).repo }}
+          git_owner: ${{ (parameters.repoUrl | parseRepoUrl).owner }}
+          cluster: .apps.home.myocp.net
+          namespace: ${{ parameters.repoName }}-dev
+          image_registry: ${{ parameters.image_registry }}
+          image_host: ${{ parameters.image_host }}
+          image_organization: ${{ parameters.image_organization }}
+          image_name: ${{ parameters.repoName }}
+          port: 8080
+          deployment_name: quarkus-template
+        targetPath: ./tenant-gitops
+
+    - id: publish-gitops
+      name: Publishing to Resource Repository
+      action: publish:github
+      input:
+        repoUrl: github.com?repo=${{ (parameters.repoUrl | parseRepoUrl).repo }}-gitops&owner=${{ (parameters.repoUrl | parseRepoUrl).owner }}
+        title: gitops resources for ${{ parameters.repoName }}
+        description: gitops resources for ${{ parameters.repoName }}
+        sourcePath: ./tenant-gitops
+        repoVisibility: public
+
+    - id: create-argocd-resources
+      name: Create ArgoCD Resources
+      action: argocd:create-resources
+      input:
+        appName: ${{ parameters.repoName }}-bootstrap
+        argoInstance: main
+        namespace: openshift-gitops
+        repoUrl: https://github.com/${{ (parameters.repoUrl | parseRepoUrl).owner }}/${{ (parameters.repoUrl | parseRepoUrl).repo }}-gitops.git
+        path: 'argocd/'
   output:
     links:
       - title: Open the Source Code Repository
