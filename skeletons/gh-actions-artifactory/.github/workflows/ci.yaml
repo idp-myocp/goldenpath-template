@@ -1,5 +1,10 @@
 name: Build and Tag Image
 
+env:
+  REGISTRY_URL: ${{ secrets.REGISTRY_URL }}
+  REGISTRY_NAMESPACE: ${{ secrets.REGISTRY_NAMESPACE }}
+  APP_NAME:  ${{ github.event.repository.name }}
+
 on:
   push:
     branches:
@@ -17,11 +22,10 @@ jobs:
         env:
           JF_URL: ${{ secrets.JF_URL }}
           JF_ACCESS_TOKEN: ${{ secrets.JF_ACCESS_TOKEN }}
-          IMAGE_NAMESPACE: ${{ secrets.REGISTRY_NAMESPACE }}
 
       - name: Build Tag and push Docker Image
         env:
-          IMAGE_NAME: ${{ env.JF_URL }}/${{ env.IMAGE_REGISTRY }}/${{ github.event.repository.name }}:${{ github.run_number }}
+          IMAGE_NAME: ${{ env.REGISTRY_URL}}/${{ env.REGISTRY_NAMESPACE }}/${{ env.APP_NAME }}:${{ github.run_number }}
         run: |
           jf docker build -t $IMAGE_NAME .
           jf docker push $IMAGE_NAME

@@ -17,7 +17,7 @@ metadata:
     backstage.io/techdocs-ref: dir:.
     github.com/project-slug: ${{ values.githubOrg }}/${{ values.repoName }}
     jira/project-key: ISSUEBD
-    jfrog-artifactory/image-name: backstage-showcase
+    jfrog-artifactory/image-name: ${{ values.repoName }}
 
 spec:
   type: ${{ values.applicationType }}
