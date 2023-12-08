@@ -19,6 +19,20 @@ metadata:
     jira/project-key: ISSUEBD
     jfrog-artifactory/image-name: ${{ values.repoName }}
 
+  tags:
+    - java
+    - quarkus
+    - gh-action
+    - artifactory
+    - argocd
+  links:
+    - url: https://devspaces${{values.cluster}}/#https://github.com/${{values.githubOrg}}/${{values.repoName}}?che-editor=che-incubator/che-code/insiders&devfilePath=.devfile-vscode.yaml
+      title: OpenShift Dev Spaces (VS Code)
+      icon: web
+    - url: https://devspaces${{values.cluster}}/#https://github.com/${{values.githubOrg}}/${{values.repoName}}?che-editor=che-incubator/che-idea/latest&devfilePath=.devfile-intellij.yaml
+      title: OpenShift Dev Spaces (JetBrains IntelliJ)
+      icon: web
+
 spec:
   type: ${{ values.applicationType }}
   system: ${{ values.system }}

@@ -156,7 +156,7 @@ spec:
           imageBuilder: s2i-java
           imageRepository: ${{ parameters.imageRepository }}
           port: ${{ parameters.port }}
-          ci: ../../skeletons/gh-actions-artifactory/
+          cluster: .apps.home.myocp.net
           groupId: ${{ parameters.groupId }}
           artifactId: ${{ parameters.artifactId }}
           javaPackageName: ${{ parameters.javaPackageName }}
