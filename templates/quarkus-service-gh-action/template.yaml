@@ -9,8 +9,10 @@ metadata:
     - quarkus
     - maven
     - gh-action
+spec:
   owner: service@example.com
   type: service
+
   parameters:
     - title: Provide Information for Application
       required:
