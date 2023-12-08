@@ -77,7 +77,7 @@ spec:
           type: string
           default: io/janus/quarkusapp
           description: Name for the Java Package (ensure to use the / character as this is used for folder structure) should match Group ID and Artifact ID
-    - title: Provide information about the Continuous Integration tool
+    - title: Provide information about the Continuous Integration
       required:
         - ci
       properties:
@@ -86,6 +86,11 @@ spec:
           type: string
           description: This action will create a CI pipeline for your application based on GitHub Action
           default: GitHub Action
+        image_registry:
+          title: Image Registry
+          type: string
+          description: The image registry where the image will be store
+          default: Artifactory
 
   steps:
     - id: template
