@@ -110,7 +110,7 @@ spec:
           imageBuilder: s2i-java
           imageRepository: ${{ parameters.imageRepository }}
           port: ${{ parameters.port }}
-          ci: ${{ parameters.ci }}
+          cluster: .apps.home.myocp.net
           groupId: ${{ parameters.groupId }}
           artifactId: ${{ parameters.artifactId }}
           javaPackageName: ${{ parameters.javaPackageName }}
@@ -123,21 +123,7 @@ spec:
         copyWithoutTemplating:
           - .github/workflows/
         values:
-          githubOrg: ${{ parameters.githubOrg }}
           repoName: ${{ parameters.repoName }}
-          owner: ${{ parameters.owner }}
-          system: ${{ parameters.system }}
-          applicationType: api
-          description: ${{ parameters.description }}
-          namespace: ${{ parameters.namespace }}
-          imageUrl: ${{ parameters.imageUrl }}
-          imageBuilder: s2i-java
-          imageRepository: ${{ parameters.imageRepository }}
-          port: ${{ parameters.port }}
-          cluster: .apps.home.myocp.net
-          groupId: ${{ parameters.groupId }}
-          artifactId: ${{ parameters.artifactId }}
-          javaPackageName: ${{ parameters.javaPackageName }}
 
     - id: publish
       name: Publishing to the Source Code Repository

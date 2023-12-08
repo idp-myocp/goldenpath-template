@@ -3,7 +3,7 @@ name: Build and Tag Image
 env:
   REGISTRY_URL: ${{ secrets.REGISTRY_URL }}
   REGISTRY_NAMESPACE: ${{ secrets.REGISTRY_NAMESPACE }}
-  APP_NAME:  ${{ github.event.repository.name }}
+  APP_NAME: ${{values.repoName | dump}}
 
 on:
   push:
