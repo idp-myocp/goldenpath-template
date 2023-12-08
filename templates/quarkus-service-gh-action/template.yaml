@@ -145,6 +145,7 @@ spec:
         description: ${{ parameters.description }}
         repoUrl: github.com?owner=${{ parameters.githubOrg }}&repo=${{ parameters.repoName }}
         defaultBranch: main
+        repoVisibility: public
 
     - id: register
       name: Registering the Catalog Info Component

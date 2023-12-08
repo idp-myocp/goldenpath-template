@@ -1,62 +1,42 @@
-name: CI
+name: Build and Tag Image
 
 on:
   push:
     branches:
       - main
 
-env:
-  IMAGE_NAME: ""
-  IMAGE_TAGS: ""
-  IMAGE_REGISTRY: quay.io
-  IMAGE_NAMESPACE: ${{ secrets.REGISTRY_NAMESPACE }}
-  USERNAME: ${{ secrets.REGISTRY_USERNAME }}
-  PASSWORD: ${{ secrets.REGISTRY_PASSWORD }}
-
 jobs:
-  build-and-push-image:
-    name: Build and Create image
+  build-and-tag:
     runs-on: ubuntu-latest
-    environment: production
-
-    permissions:
-      contents: read
-      packages: write
-
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-      - name: Determine Image name
-        if: env.IMAGE_NAME == ''
+      - name: Setup JFrog CLI
+        uses: jfrog/setup-jfrog-cli@v3
+        env:
+          JF_URL: ${{ secrets.JF_URL }}
+          JF_ACCESS_TOKEN: ${{ secrets.JF_ACCESS_TOKEN }}
+          IMAGE_NAMESPACE: ${{ secrets.REGISTRY_NAMESPACE }}
+
+      - name: Build Tag and push Docker Image
+        env:
+          IMAGE_NAME: ${{ env.JF_URL }}/${{ env.IMAGE_REGISTRY }}/${{ github.event.repository.name }}:${{ github.run_number }}
         run: |
-          echo "IMAGE_NAME=$(basename $PWD)" | tee -a $GITHUB_ENV
-
-      - name: Determine image tags
-        if: env.IMAGE_TAGS == ''
+          jf docker build -t $IMAGE_NAME .
+          jf docker push $IMAGE_NAME
+          
+      - name: Publish Build info With JFrog CLI
+        env:
+          # Generated and maintained by GitHub
+          JFROG_CLI_BUILD_NAME: ${{ github.event.repository.name }}-build
+          # JFrog organization secret
+          JFROG_CLI_BUILD_NUMBER : ${{ github.run_number }}
         run: |
-          echo "IMAGE_TAGS=${GITHUB_SHA::12}" | tee -a $GITHUB_ENV
-
-      - name: Build Image
-        id: build-image
-        uses: redhat-actions/buildah-build@v2
-        with:
-          image: ${{ env.IMAGE_NAME }}
-          tags: ${{ env.IMAGE_TAGS }}
-          containerfiles: |
-            ./Dockerfile
-
-      - name: Log in to Quay.io
-        uses: redhat-actions/podman-login@v1
-        with:
-          username: ${{ env.USERNAME }}
-          password: ${{ env.PASSWORD }}
-          registry: ${{ env.IMAGE_REGISTRY }}/${{ env.IMAGE_NAMESPACE }}
-
-      - name: Push To Quay.io
-        id: push-to-quay
-        uses: redhat-actions/push-to-registry@v2
-        with:
-          image: ${{ steps.build-image.outputs.image }}
-          tags: ${{ steps.build-image.outputs.tags }}
-          registry: ${{ env.IMAGE_REGISTRY }}/${{ env.IMAGE_NAMESPACE }}
+          # Export the build name and build number
+          # Collect environment variables for the build
+          jf rt build-collect-env
+          # Collect VCS details from git and add them to the build
+          jf rt build-add-git
+          # Publish build info
+          jf rt build-publish
