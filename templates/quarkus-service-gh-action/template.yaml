@@ -1,24 +1,30 @@
 apiVersion: scaffolder.backstage.io/v1beta3
 kind: Template
 metadata:
-  name: quarkus-service-tekton
-  title: Quarkus Service with ArgoCD and a Tekton Pipeline
-  description: Create a simple microservice using Quarkus with ArgoCD and a Tekton Pipeline
+  name: quarkus-service-github-actions
+  title: Quarkus Service with ArgoCD and GitHub Action Pipepine
+  description: Create a simple microservice using Quarkus with ArgoCD and GitHub Action
   tags:
     - java
     - quarkus
     - maven
-    - GitHub Action
 spec:
   owner: service@example.com
   type: service
   parameters:
     - title: Provide Information for Application
       required:
+        - owner
+        - system
+        - port
         - component_id
         - owner
         - java_package_name
       properties:
+        description:
+          title: Description
+          type: string
+          description: Help others understand what this component is for
         component_id:
           title: Name
           type: string
@@ -40,10 +46,6 @@ spec:
           default: org.redhat.janus
           type: string
           description: Name for the java package. eg (com.redhat.blah)
-        description:
-          title: Description
-          type: string
-          description: Help others understand what this website is for.
         owner:
           title: Owner
           type: string
@@ -52,6 +54,11 @@ spec:
           ui:options:
             allowedKinds:
               - Group
+        port:
+          title: Port
+          type: number
+          default: 8080
+          description: Override the port exposed for the application
     - title: Provide Image Registry Information
       required:
         - image_registry
@@ -105,8 +112,6 @@ spec:
       action: fetch:template
       input:
         url: ./skeleton
-        copyWithoutTemplating:
-          - .github/workflows/*
         values:
           component_id: ${{ parameters.component_id }}
           namespace: ${{ parameters.component_id }}-dev
@@ -119,6 +124,30 @@ spec:
           destination: ${{ (parameters.repoUrl | parseRepoUrl).owner }}/${{ (parameters.repoUrl | parseRepoUrl).repo }}
           quay_destination: ${{ parameters.image_organization }}/${{ parameters.component_id }}
           port: 8080
+
+    - id: ciTemplate
+      name: Generating the CI Component
+      action: fetch:template
+      input:
+        url: ./scaffolder-skeletons/github-actions-skeleton/
+        copyWithoutTemplating:
+          - .github/workflows/
+        values:
+          githubOrg: ${{ parameters.githubOrg }}
+          repoName: ${{ parameters.repoName }}
+          owner: ${{ parameters.owner }}
+          system: ${{ parameters.system }}
+          applicationType: service
+          description: ${{ parameters.description }}
+          namespace: ${{ parameters.namespace }}
+          imageUrl: ${{ parameters.imageUrl }}
+          imageBuilder: s2i-java
+          imageRepository: ${{ parameters.imageRepository }}
+          port: ${{ parameters.port }}
+          ci: ${{ parameters.ci }}
+          groupId: ${{ parameters.groupId }}
+          artifactId: ${{ parameters.artifactId }}
+          javaPackageName: ${{ parameters.javaPackageName }}
 
     - id: publish
       name: Publishing to Source Code Repository
