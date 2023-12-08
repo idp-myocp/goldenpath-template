@@ -119,30 +119,6 @@ spec:
           quay_destination: ${{ parameters.image_organization }}/${{ parameters.component_id }}
           port: 8080
 
-    - id: ciTemplate
-      name: Generating the CI Component
-      action: fetch:template
-      input:
-        url: ./scaffolder-skeletons/github-actions-skeleton/
-        copyWithoutTemplating:
-          - .github/workflows/
-        values:
-          githubOrg: ${{ parameters.githubOrg }}
-          repoName: ${{ parameters.repoName }}
-          owner: ${{ parameters.owner }}
-          system: ${{ parameters.system }}
-          applicationType: service
-          description: ${{ parameters.description }}
-          namespace: ${{ parameters.namespace }}
-          imageUrl: ${{ parameters.imageUrl }}
-          imageBuilder: s2i-java
-          imageRepository: ${{ parameters.imageRepository }}
-          port: ${{ parameters.port }}
-          ci: ${{ parameters.ci }}
-          groupId: ${{ parameters.groupId }}
-          artifactId: ${{ parameters.artifactId }}
-          javaPackageName: ${{ parameters.javaPackageName }}
-
     - id: publish
       name: Publishing to Source Code Repository
       action: publish:github
