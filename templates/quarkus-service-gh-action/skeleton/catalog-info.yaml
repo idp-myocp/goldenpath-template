@@ -6,7 +6,7 @@ metadata:
   description: ${{values.description | dump}}
   {%- endif %}
   annotations:
-    argocd/app-name: ${{values.repoName}-dev
+    argocd/app-name: ${{values.repoName}}-dev
     janus-idp.io/tekton-enabled : 'false'
     github.com/project-slug: ${{values.githubOrg}}/${{values.repoName}}
     backstage.io/techdocs-ref: dir:.
