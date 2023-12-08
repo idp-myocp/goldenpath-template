@@ -8,7 +8,7 @@ metadata:
     - java
     - quarkus
     - maven
-    - GitHub Action
+    - tekton
 spec:
   owner: service@example.com
   type: service
