@@ -8,7 +8,7 @@ metadata:
     - java
     - quarkus
     - maven
-    - gh-action
+    - ghaction
 spec:
   owner: janus-authors
   system: janus-idp
