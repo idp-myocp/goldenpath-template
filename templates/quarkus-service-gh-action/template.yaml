@@ -166,8 +166,8 @@ spec:
           cluster: .apps.home.myocp.net
           namespace: ${{ parameters.repoName }}-dev
           image_registry: ${{ parameters.image_registry }}
-          image_host: ${{ parameters.image_host }}
-          image_organization: ${{ parameters.image_organization }}
+          image_host: froberge.jfrog.io
+          image_organization: demo-image-docker
           image_name: ${{ parameters.repoName }}
           port: 8080
           deployment_name: quarkus-template
