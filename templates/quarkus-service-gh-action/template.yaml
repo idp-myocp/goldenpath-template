@@ -142,7 +142,8 @@ spec:
         repoUrl: github.com?owner=${{ parameters.githubOrg }}&repo=${{ parameters.repoName }}
         defaultBranch: main
         repoVisibility: public
-
+        protectDefaultBranch: false
+        
     - id: register
       name: Registering the Catalog Info Component
       action: catalog:register
@@ -182,6 +183,7 @@ spec:
         description: gitops resources for ${{ parameters.repoName }}
         sourcePath: ./tenant-gitops
         repoVisibility: public
+        protectDefaultBranch: false
 
     - id: create-argocd-resources
       name: Create ArgoCD Resources

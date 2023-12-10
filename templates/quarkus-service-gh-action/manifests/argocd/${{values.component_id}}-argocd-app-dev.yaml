@@ -19,7 +19,7 @@ spec:
       - name: environment
         value: dev
       - name: image.tag
-        value: latest
+        value: 4
   destination:
     server: https://kubernetes.default.svc
     namespace: ${{ values.component_id }}-dev
