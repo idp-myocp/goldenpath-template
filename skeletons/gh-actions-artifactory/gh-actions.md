@@ -8,6 +8,8 @@ The GitHub Actions CI Method with Artifactory will require repository or organiz
 
 - `JF_ACCESS_TOKEN` - JFrog Artifactory access token
 - `JF_URL` - The URL of the JFROG instance
+- `JF_USERNAME` - The username for the JFROG account
+- `JF_PASSWORD` - Docker access token
 - `REGISTRY_NAMESPACE` - The Artifactory Repository where to upload the image
 - `REGISTRY_URL` - The Registry url, usually it the JF_URL without the https
 
