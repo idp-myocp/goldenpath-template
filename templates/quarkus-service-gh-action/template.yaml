@@ -147,9 +147,8 @@ spec:
     - id: sleep
       name: sleep 2 seconds
       action: roadiehq:utils:sleep
-      input:
-        values: 
-           path: 2
+      input: 
+        path: 2
            
     - id: register
       name: Registering the Catalog Info Component
