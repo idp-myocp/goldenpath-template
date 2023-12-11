@@ -14,7 +14,7 @@ image:
   registry: ${{values.image_host}} #${{values.image_registry}}
   host: ${{values.image_host}}
   organization: ${{values.image_organization}}
-  name: froberge.jfrog.io/demo-image-docker-local/sarge2:2  
+  name: ${{values.image_name}}
 
 #  name: ${{values.image_name}}
   # Overrides the image tag whose default is the chart appVersion.
