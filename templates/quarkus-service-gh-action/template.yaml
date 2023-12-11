@@ -2,7 +2,7 @@ apiVersion: scaffolder.backstage.io/v1beta3
 kind: Template
 metadata:
   name: quarkus-service-github-actions
-  title: Quarkus Service with ArgoCD and GitHub Action Pipepine
+  title: Quarkus Service with ArgoCD and GitHub Action Pipeline v1
   description: Create a simple microservice using Quarkus with ArgoCD and GitHub Action
   tags:
     - java
