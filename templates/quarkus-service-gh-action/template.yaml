@@ -149,8 +149,8 @@ spec:
       action: roadiehq:utils:sleep
       input:
         values: 
-           amount: "2"
-           
+           amount: 2
+
     - id: register
       name: Registering the Catalog Info Component
       action: catalog:register
