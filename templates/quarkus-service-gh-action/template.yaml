@@ -101,105 +101,14 @@ spec:
               - github.com
 
   steps:
-    - id: template
-      name: Generating the Source Code Component
-      action: fetch:template
-      input:
-        url: ./skeleton
-        values:
-          githubOrg: ${{ parameters.githubOrg }}
-          repoName: ${{ parameters.repoName }}
-          owner: ${{ parameters.owner }}
-          system: ${{ parameters.system }}
-          applicationType: service
-          description: ${{ parameters.description }}
-          namespace: ${{ parameters.namespace }}
-          imageUrl: ${{ parameters.imageUrl }}
-          imageBuilder: s2i-java
-          imageRepository: ${{ parameters.imageRepository }}
-          port: ${{ parameters.port }}
-          cluster: .apps.home.myocp.net
-          groupId: ${{ parameters.groupId }}
-          artifactId: ${{ parameters.artifactId }}
-          javaPackageName: ${{ parameters.javaPackageName }}
 
-    - id: ciTemplate
-      name: Generating the CI Component
-      action: fetch:template
-      input:
-        url: ../../skeletons/gh-actions-artifactory/
-        copyWithoutTemplating:
-          - .github/workflows/
-        values:
-          repoName: ${{ parameters.repoName }}
-
-    - id: publish
-      name: Publishing to the Source Code Repository
-      action: publish:github
-      input:
-        allowedHosts: ['github.com']
-        description: ${{ parameters.description }}
-        repoUrl: github.com?owner=${{ parameters.githubOrg }}&repo=${{ parameters.repoName }}
-        defaultBranch: main
-        repoVisibility: public
-        protectDefaultBranch: false
-  
     - id: sleep
       name: sleep 2 seconds
       action: roadiehq:utils:sleep
       input: 
         path: 2
            
-    - id: register
-      name: Registering the Catalog Info Component
-      action: catalog:register
-      input:
-        repoContentsUrl: ${{ steps.publish.output.repoContentsUrl }}
-        catalogInfoPath: /catalog-info.yaml
 
-    - id: template-gitops-deployment
-      name: Generating Deployment Resources
-      action: fetch:template
-      input:
-        url: ./manifests
-        copyWithoutTemplating: []
-        values:
-          component_id: ${{ parameters.repoName }}
-          description: ${{ parameters.description }}
-          destination: https://github.com/${{ (parameters.repoUrl | parseRepoUrl).owner }}/${{ (parameters.repoUrl | parseRepoUrl).repo }}-gitops
-          source_repository: https://github.com/${{ (parameters.repoUrl | parseRepoUrl).owner }}/${{ (parameters.repoUrl | parseRepoUrl).repo }}
-          repository_name: ${{ (parameters.repoUrl | parseRepoUrl).repo }}
-          git_owner: ${{ (parameters.repoUrl | parseRepoUrl).owner }}
-          cluster: .apps.home.myocp.net
-          namespace: ${{ parameters.repoName }}-dev
-          image_registry: ${{ parameters.image_registry }}
-          image_host: froberge.jfrog.io
-          image_organization: demo-image-docker
-          image_name: ${{ parameters.repoName }}
-          port: 8080
-          deployment_name: quarkus-template
-        targetPath: ./tenant-gitops
-
-    - id: publish-gitops
-      name: Publishing to Resource Repository
-      action: publish:github
-      input:
-        repoUrl: github.com?repo=${{ (parameters.repoUrl | parseRepoUrl).repo }}-gitops&owner=${{ (parameters.repoUrl | parseRepoUrl).owner }}
-        title: gitops resources for ${{ parameters.repoName }}
-        description: gitops resources for ${{ parameters.repoName }}
-        sourcePath: ./tenant-gitops
-        repoVisibility: public
-        protectDefaultBranch: false
-
-    - id: create-argocd-resources
-      name: Create ArgoCD Resources
-      action: argocd:create-resources
-      input:
-        appName: ${{ parameters.repoName }}-bootstrap
-        argoInstance: main
-        namespace: openshift-gitops
-        repoUrl: https://github.com/${{ (parameters.repoUrl | parseRepoUrl).owner }}/${{ (parameters.repoUrl | parseRepoUrl).repo }}-gitops.git
-        path: 'argocd/'
   output:
     links:
       - title: Open the Source Code Repository
