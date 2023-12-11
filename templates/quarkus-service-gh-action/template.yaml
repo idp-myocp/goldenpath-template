@@ -149,7 +149,7 @@ spec:
       action: roadiehq:utils:sleep
       input:
         values: 
-           amount: 2
+           path: 2
            
     - id: register
       name: Registering the Catalog Info Component
