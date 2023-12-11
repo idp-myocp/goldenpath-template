@@ -6,12 +6,14 @@ metadata:
   description: ${{values.description | dump}}
   {%- endif %}
   annotations:
+    backstage.io/kubernetes-id: ${{values.component_id}}
+    backstage.io/kubernetes-namespace: ${{values.component_id}}-dev
     argocd/app-name: ${{values.repoName}}-dev
     github.com/project-slug: ${{values.githubOrg}}/${{values.repoName}}
     backstage.io/techdocs-ref: dir:.
     jira/project-key: ISSUEBD
     jfrog-artifactory/image-name: ${{values.repoName}}
-    sonarqube.org/project-key: YOUR_PROJECT_KEY
+    sonarqube.org/project-key: DEMO
 
   tags:
     - java
