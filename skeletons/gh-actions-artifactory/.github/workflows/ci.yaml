@@ -17,11 +17,11 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      # - name: SonarQube Scan
-      #   uses: kitabisa/sonarqube-action@v1.2.0
-      #   with:
-      #     host: ${{ secrets.SONARQUBE_HOST }}
-      #     login: ${{ secrets.SONARQUBE_TOKEN }}
+      - name: SonarQube Scan
+        uses: kitabisa/sonarqube-action@v1.2.0
+        with:
+          host: ${{ secrets.SONARQUBE_HOST }}
+          login: ${{ secrets.SONARQUBE_TOKEN }}
 
       - name: Setup JFrog CLI
         uses: jfrog/setup-jfrog-cli@v3
@@ -31,7 +31,7 @@ jobs:
 
       - name: Build Tag and push Docker Image
         env:
-          IMAGE_NAME: ${{ env.REGISTRY_URL}}/${{ env.REGISTRY_NAMESPACE }}/${{ env.APP_NAME }}:${{ github.run_number }}
+          IMAGE_NAME: ${{ env.REGISTRY_URL}}/${{ env.REGISTRY_NAMESPACE }}/${{ env.APP_NAME }}:latest
         run: |
           jf docker build -t $IMAGE_NAME .
           jf docker push $IMAGE_NAME

@@ -13,7 +13,7 @@ metadata:
     backstage.io/techdocs-ref: dir:.
     jira/project-key: ISSUEBD
     jfrog-artifactory/image-name: ${{values.repoName}}
-    sonarqube.org/project-key: DEMO
+    sonarqube.org/project-key: ${{values.repoName}}
 
   tags:
     - java
