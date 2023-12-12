@@ -6,6 +6,6 @@ metadata:
 spec:
   type: url
   targets:
-#    - https://github.com/idp-myocp/goldenpath-template/blob/main/templates/argocd-kubegreen/template.yaml
-#    - https://github.com/idp-myocp/goldenpath-template/blob/main/templates/quarkus-service/template.yaml
-#    - https://github.com/idp-myocp/goldenpath-template/blob/main/templates/quarkus-service-gh-action/template.yaml
+   - https://github.com/idp-myocp/goldenpath-template/blob/main/templates/argocd-kubegreen/template.yaml
+   - https://github.com/idp-myocp/goldenpath-template/blob/main/templates/quarkus-service/template.yaml
+   - https://github.com/idp-myocp/goldenpath-template/blob/main/templates/quarkus-service-gh-action/template.yaml
