@@ -10,7 +10,7 @@ metadata:
 spec:
   owner: idp-myocp
   system: idp-myocp
-  type: service
+  type: IaC
 
   parameters:
     - title: Provide Information for Project
