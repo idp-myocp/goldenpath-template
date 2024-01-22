@@ -12,8 +12,8 @@ metadata:
     github.com/project-slug: ${{values.githubOrg}}/${{values.repoName}}
     backstage.io/techdocs-ref: dir:.
     jira/project-key: ISSUEBD
-    jfrog-artifactory/image-name: ${{values.repoName}}
     sonarqube.org/project-key: ${{values.repoName}}
+    nexus-repository-manager/docker.image-name: b${{values.repoName}}
 
   tags:
     - java
