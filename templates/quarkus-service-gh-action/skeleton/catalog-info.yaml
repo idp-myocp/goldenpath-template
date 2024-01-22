@@ -13,7 +13,7 @@ metadata:
     backstage.io/techdocs-ref: dir:.
     jira/project-key: ISSUEBD
     sonarqube.org/project-key: ${{values.repoName}}
-    nexus-repository-manager/docker.image-name: b${{values.repoName}}
+    nexus-repository-manager/docker.image-name: ${{values.repoName}}
 
   tags:
     - java
