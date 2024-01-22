@@ -130,7 +130,7 @@ spec:
       name: Generating the CI Component
       action: fetch:template
       input:
-        url: ../../skeletons/gh-actions-nexusArti/
+        url: ../../skeletons/gh-actions-nexus/
         copyWithoutTemplating:
           - .github/workflows/
         values:
