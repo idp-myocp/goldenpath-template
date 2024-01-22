@@ -23,30 +23,38 @@ jobs:
           host: ${{ secrets.SONARQUBE_HOST }}
           login: ${{ secrets.SONARQUBE_TOKEN }}
 
-      - name: Setup JFrog CLI
-        uses: jfrog/setup-jfrog-cli@v3
-        env:
-          JF_URL: ${{ secrets.JF_URL }}
-          JF_ACCESS_TOKEN: ${{ secrets.JF_ACCESS_TOKEN }}
+      - name: Determine image tags
+        if: env.IMAGE_TAGS == ''
+        run: |
+          echo "IMAGE_TAGS=latest ${GITHUB_SHA::12}" | tee -a $GITHUB_ENV
+  
+      # https://github.com/redhat-actions/buildah-build#readme
+      - name: Build from Dockerfile
+        id: build-image
+        uses: redhat-actions/buildah-build@v2
+        with:
+          image: ${{ env.APP_NAME }}
+          tags: ${{ env.IMAGE_TAGS }}
+  
+          # If you don't have a Dockerfile/Containerfile, refer to https://github.com/redhat-actions/buildah-build#scratch-build-inputs
+          # Or, perform a source-to-image build using https://github.com/redhat-actions/s2i-build
+          # Otherwise, point this to your Dockerfile/Containerfile relative to the repository root.
+          dockerfiles: |
+            ./Dockerfile
 
-      - name: Build Tag and push Docker Image
-        env:
-          IMAGE_NAME: ${{ env.REGISTRY_URL}}/${{ env.REGISTRY_NAMESPACE }}/${{ env.APP_NAME }}:latest
-        run: |
-          jf docker build -t $IMAGE_NAME .
-          jf docker push $IMAGE_NAME
-          
-      - name: Publish Build info With JFrog CLI
-        env:
-          # Generated and maintained by GitHub
-          JFROG_CLI_BUILD_NAME: ${{ github.event.repository.name }}-build
-          # JFrog organization secret
-          JFROG_CLI_BUILD_NUMBER : ${{ github.run_number }}
-        run: |
-          # Export the build name and build number
-          # Collect environment variables for the build
-          jf rt build-collect-env
-          # Collect VCS details from git and add them to the build
-          jf rt build-add-git
-          # Publish build info
-          jf rt build-publish
+      - name: Log in to Nexus
+        uses: redhat-actions/podman-login@v1
+        with:
+          username: ${{ secrets.NEXUS_USER }}
+          password: ${{ secrets.NEXUS_PASSWORD }}
+          registry: ${{ secrets.NEXUS_URL }}
+  
+      - name: Push to Nexus
+        id: push-to-quay
+        uses: redhat-actions/push-to-registry@v2
+        with:
+          image: ${{ steps.build-image.outputs.image }}
+          tags: ${{ steps.build-image.outputs.tags }}
+          username: ${{ secrets.NEXUS_USER }}
+          password: ${{ secrets.NEXUS_PASSWORD }}
+          registry: ${{ secrets.NEXUS_URL }}
