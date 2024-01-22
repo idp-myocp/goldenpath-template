@@ -91,7 +91,10 @@ spec:
           title: Image Registry
           type: string
           description: The image registry where the image will be store
-          default: Artifactory
+          ui:field: RepoUrlPicker
+          ui:options:
+            allowedHosts:
+              - Nexus
         repoUrl:
           title: Repository Location
           type: string
@@ -127,7 +130,7 @@ spec:
       name: Generating the CI Component
       action: fetch:template
       input:
-        url: ../../skeletons/gh-actions-artifactory/
+        url: ../../skeletons/gh-actions-nexus/
         copyWithoutTemplating:
           - .github/workflows/
         values:

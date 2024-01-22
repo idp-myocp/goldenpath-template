@@ -1,8 +1,6 @@
 name: Promote to PreProd
 
 env:
-  REGISTRY_URL: ${{ secrets.REGISTRY_URL }}
-  REGISTRY_NAMESPACE: ${{ secrets.REGISTRY_NAMESPACE }}
   APP_NAME:  ${{ github.event.repository.name }}
 
 on:
@@ -20,9 +18,9 @@ jobs:
     - name: Search latest Image
       uses: tinact/docker.image-retag@master
       with:
-        image_name:  ${{ github.event.repository.name }}
+        image_name: ${{ env.APP_NAME }}
         image_old_tag: latest
         image_new_tag: preprod
-        registry: ${{ secrets.REGISTRY_URL }}/${{ secrets.REGISTRY_NAMESPACE }}
-        registry_username: ${{ secrets.JF_USERNAME }}
-        registry_password: ${{ secrets.JF_PASSWORD }}
+        registry: ${{ secrets.NEXUS_URL }}
+        registry_username: ${{ secrets.NEXUS_USER }}
+        registry_password: ${{ secrets.NEXUS_PASSWORD }}
