@@ -1,9 +1,9 @@
 name: Build and Tag Image
 
 env:
-  REGISTRY_URL: ${{ secrets.REGISTRY_URL }}
-  REGISTRY_NAMESPACE: ${{ secrets.REGISTRY_NAMESPACE }}
   APP_NAME:  ${{ github.event.repository.name }}
+  # 🖊️ EDIT to specify custom tags for the container image, or default tags will be generated below.
+  IMAGE_TAGS: "latest"
 
 on:
   push:
