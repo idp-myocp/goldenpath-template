@@ -91,10 +91,10 @@ spec:
           title: Image Registry
           type: string
           description: The image registry where the image will be store
-          ui:field: RepoUrlPicker
-          ui:options:
-            allowedHosts:
-              - Nexus
+          enum:
+            - Nexus
+          enumNames: 
+            - Nexus
         repoUrl:
           title: Repository Location
           type: string
@@ -130,7 +130,7 @@ spec:
       name: Generating the CI Component
       action: fetch:template
       input:
-        url: ../../skeletons/gh-actions-nexus/
+        url: ../../skeletons/gh-actions-nexusArti/
         copyWithoutTemplating:
           - .github/workflows/
         values:
