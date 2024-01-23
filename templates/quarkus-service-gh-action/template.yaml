@@ -95,6 +95,12 @@ spec:
             - Nexus
           enumNames: 
             - Nexus
+        image_host:
+          title: Registry Host
+          type: string
+          description: The url for the image registry
+          default: registry-nexus.apps.home.myocp.net:443
+
         repoUrl:
           title: Repository Location
           type: string
@@ -176,7 +182,7 @@ spec:
           cluster: .apps.home.myocp.net
           namespace: ${{ parameters.repoName }}-dev
           image_registry: ${{ parameters.image_registry }}
-          image_host: registry-nexus.apps.home.myocp.net:443
+          image_host: ${{ parameters.image_host }}
           image_organization: docker
           image_name: ${{ parameters.repoName }}
           port: 8080
