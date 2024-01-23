@@ -68,7 +68,7 @@ Create the name of the service account to use
 
 {{- define "quarkus-template.image" -}}
 {{- if eq .Values.image.registry "Nexus" }}
-{{- printf "%s/%s/%s:%s" .Values.image.host .Values.image.organization .Values.image.name .Values.image.tag -}}
+{{- printf "%s/%s:%s" .Values.image.host .Values.image.name .Values.image.tag -}}
 {{- else }}
 {{- printf "%s/%s/%s:%s" .Values.image.host .Values.image.organization .Values.image.name .Values.image.tag -}}
 {{- end }}
