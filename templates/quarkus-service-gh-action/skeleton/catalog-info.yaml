@@ -10,8 +10,7 @@ metadata:
     backstage.io/kubernetes-namespace: ${{values.repoName}}-dev
     argocd/app-name: ${{values.repoName}}-dev
     github.com/project-slug: ${{values.githubOrg}}/${{values.repoName}}
-    janus-idp.io/tekton-enabled : 'true'
-    backstage.io/techdocs-ref: url:https://github.com/idp-myocp/${{values.repoName}}
+    backstage.io/techdocs-ref: dir:.
     jira/project-key: ISSUEBD
     sonarqube.org/project-key: ${{values.repoName}}
     nexus-repository-manager/docker.image-name: ${{values.repoName}}
