@@ -27,7 +27,7 @@ jobs:
           login: ${{ secrets.SONARQUBE_TOKEN }}
 
       - name: Setup JFrog CLI
-        uses: jfrog/setup-jfrog-cli@v3
+        uses: jfrog/setup-jfrog-cli@v4.1.0
         env:
           JF_URL: ${{ secrets.JF_URL }}
           JF_ACCESS_TOKEN: ${{ secrets.JF_ACCESS_TOKEN }}
