@@ -1,10 +1,5 @@
 name: Promote to PreProd
 
-env:
-  REGISTRY_URL: ${{ secrets.REGISTRY_URL }}
-  REGISTRY_NAMESPACE: ${{ secrets.REGISTRY_NAMESPACE }}
-  APP_NAME:  ${{ github.event.repository.name }}
-
 on:
   push:
     # Sequence of patterns matched against refs/tags
