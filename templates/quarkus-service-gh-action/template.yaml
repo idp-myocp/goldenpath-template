@@ -92,14 +92,14 @@ spec:
           type: string
           description: The image registry where the image will be store
           enum:
-            - Nexus
+            - Artifactory
           enumNames: 
-            - Nexus
-        image_host:
-          title: Registry Host
-          type: string
-          description: The url for the image registry
-          default: registry-nexus.apps.home.myocp.net:443
+            - Artifactory
+        # image_host:
+        #   title: Registry Host
+        #   type: string
+        #   description: The url for the image registry
+        #   default: registry-nexus.apps.home.myocp.net:443
 
         repoUrl:
           title: Repository Location
@@ -136,7 +136,7 @@ spec:
       name: Generating the CI Component
       action: fetch:template
       input:
-        url: ../../skeletons/gh-actions-nexus/
+        url: ../../skeletons/gh-actions-artifactory/
         copyWithoutTemplating:
           - .github/workflows/
         values:
