@@ -37,11 +37,10 @@ jobs:
           IMAGE_NAME_LATEST: ${{ env.REGISTRY_URL}}/${{ env.REGISTRY_NAMESPACE }}/${{ env.APP_NAME }}:latest
           IMAGE_NAME_TAG: ${{ env.REGISTRY_URL}}/${{ env.REGISTRY_NAMESPACE }}/${{ env.APP_NAME }}:${{ github.run_number }}
         run: |
+          jf docker build -t $IMAGE_NAME_LATEST .
+          jf docker push $IMAGE_NAME_LATEST
           jf docker build -t $IMAGE_NAME_TAG .
           jf docker push $IMAGE_NAME_TAG
-          jf docker build -t $IMAGE_NAME_TAG .
-          jf docker push $IMAGE_NAME_TAG
-  
 
       - name: Publish Build info With JFrog CLI
         env:
