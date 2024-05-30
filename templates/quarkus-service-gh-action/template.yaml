@@ -95,11 +95,11 @@ spec:
             - Artifactory
           enumNames: 
             - Artifactory
-        # image_host:
-        #   title: Registry Host
-        #   type: string
-        #   description: The url for the image registry
-        #   default: registry-nexus.apps.home.myocp.net:443
+        image_host:
+          title: Registry Host
+          type: string
+          description: The url for the image registry
+          default: froberge1.jfrog.io
 
         repoUrl:
           title: Repository Location
@@ -183,7 +183,7 @@ spec:
           namespace: ${{ parameters.repoName }}-dev
           image_registry: ${{ parameters.image_registry }}
           image_host: ${{ parameters.image_host }}
-          image_organization: docker
+          image_organization: demo-docker
           image_name: ${{ parameters.repoName }}
           port: 8080
           deployment_name: quarkus-template
