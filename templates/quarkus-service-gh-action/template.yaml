@@ -5,6 +5,7 @@ metadata:
   title: Quarkus Service with ArgoCD and GitHub Action Pipeline
   description: Create a simple microservice using Quarkus with ArgoCD and GitHub Action
   tags:
+    - recommended
     - java
     - quarkus
     - maven
