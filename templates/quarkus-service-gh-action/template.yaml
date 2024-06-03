@@ -10,7 +10,7 @@ metadata:
     - quarkus
     - maven
     - ghaction
-    - Artifactory
+    - artifactory
 spec:
   owner: janus-authors
   system: janus-idp
