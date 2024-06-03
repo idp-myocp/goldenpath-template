@@ -5,6 +5,7 @@ metadata:
   title: Quarkus Service with ArgoCD and a Tekton Pipeline
   description: Create a simple microservice using Quarkus with ArgoCD and a Tekton Pipeline
   tags:
+    - recommended
     - java
     - quarkus
     - maven
