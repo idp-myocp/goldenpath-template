@@ -1,11 +1,10 @@
 apiVersion: scaffolder.backstage.io/v1beta3
 kind: Template
 metadata:
-  name: quarkus-web-template
+  name: quarkus-service-tekton
   title: Quarkus Service with ArgoCD and a Tekton Pipeline
   description: Create a simple microservice using Quarkus with ArgoCD and a Tekton Pipeline
   tags:
-    - recommended
     - java
     - quarkus
     - maven
@@ -13,6 +12,7 @@ metadata:
 spec:
   owner: service@example.com
   type: service
+
   parameters:
     - title: Provide Information for Application
       required:
@@ -106,8 +106,24 @@ spec:
       action: fetch:template
       input:
         url: ./skeleton
-        copyWithoutTemplating:
-          - .github/workflows/*
+        values:
+          component_id: ${{ parameters.component_id }}
+          namespace: ${{ parameters.component_id }}-dev
+          description: ${{ parameters.description }}
+          group_id: ${{ parameters.group_id }}
+          artifact_id: ${{ parameters.artifact_id }}
+          java_package_name: ${{ parameters.java_package_name }}
+          owner: ${{ parameters.owner }}
+          cluster: .apps.home.myocp.net
+          destination: ${{ (parameters.repoUrl | parseRepoUrl).owner }}/${{ (parameters.repoUrl | parseRepoUrl).repo }}
+          quay_destination: ${{ parameters.image_organization }}/${{ parameters.component_id }}
+          port: 8080
+
+    - id: ciTemplate
+      name: Generating component
+      action: fetch:template
+      input:
+        url: ../../../skeletons/tekton/
         values:
           component_id: ${{ parameters.component_id }}
           namespace: ${{ parameters.component_id }}-dev
