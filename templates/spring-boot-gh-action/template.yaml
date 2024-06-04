@@ -72,12 +72,12 @@ spec:
         artifactId:
           title: Artifact ID
           type: string
-          default: spring-boot-app
+          default: springbootapp
           description: Maven Artifact ID
         javaPackageName:
           title: Java Package Namespace
           type: string
-          default: io/janus/spring-boot-app
+          default: io/janus/springbootapp
           description: Name for the Java Package (ensure to use the / character as this is used for folder structure) should match Group ID and Artifact ID
     - title: Provide information about the CI method
       required:
