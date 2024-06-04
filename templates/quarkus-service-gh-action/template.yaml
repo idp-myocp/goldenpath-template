@@ -155,8 +155,9 @@ spec:
         repoVisibility: public
         protectDefaultBranch: false
   
+    # Let's sleep for 2 second to let time to the repository to be created
     - id: sleep
-      name: sleep 2 seconds
+      name: Validate that source code Repository is created
       action: roadiehq:utils:sleep
       input:
         path: 2
