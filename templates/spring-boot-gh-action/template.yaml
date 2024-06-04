@@ -6,7 +6,7 @@ metadata:
   description: Create a simple microservice using Spring Boot with ArgoCD and GitHub Action
   tags:
     - recommended
-    - spring-boot
+    - springboot
     - java
     - maven
     - ghaction
