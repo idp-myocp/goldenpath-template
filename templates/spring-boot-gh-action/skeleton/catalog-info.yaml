@@ -1,0 +1,53 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: ${{values.repoName| dump}}
+  {%- if values.description %}
+  description: ${{values.description | dump}}
+  {%- endif %}
+  annotations:
+    backstage.io/kubernetes-id: ${{values.repoName}}
+    backstage.io/kubernetes-namespace: ${{values.repoName}}-dev
+    argocd/app-name: ${{values.repoName}}-dev
+    github.com/project-slug: ${{values.githubOrg}}/${{values.repoName}}
+    backstage.io/techdocs-ref: dir:.
+    jira/project-key: ISSUEBD
+    sonarqube.org/project-key: ${{values.repoName}}
+    jfrog-artifactory/image-name: ${{values.repoName}}
+    # nexus-repository-manager/docker.image-name: ${{values.repoName}}
+
+  tags:
+    - java
+    - spring-boot
+    - ghactions
+    - argocd
+    - artifactory
+
+  links:
+    - url: https://devspaces${{values.cluster}}/#https://github.com/${{values.githubOrg}}/${{values.repoName}}?che-editor=che-incubator/che-code/insiders&devfilePath=.devfile-vscode.yaml
+      title: OpenShift Dev Spaces (VS Code)
+      icon: web
+    - url: https://devspaces${{values.cluster}}/#https://github.com/${{values.githubOrg}}/${{values.repoName}}?che-editor=che-incubator/che-idea/latest&devfilePath=.devfile-intellij.yaml
+      title: OpenShift Dev Spaces (JetBrains IntelliJ)
+      icon: web
+spec:
+  type: ${{ values.applicationType }}
+  system: ${{ values.system }}
+  lifecycle: production
+  owner: ${{values.owner | dump}}
+  providesApis:
+    - ${{values.repoName | dump}}
+---
+apiVersion: backstage.io/v1alpha1
+kind: API
+metadata:
+  name: ${{values.repoName | dump}}
+  {%- if values.description %}
+  description: ${{values.description | dump}}
+  {%- endif %}
+spec:
+  type: openapi
+  lifecycle: production
+  owner: ${{values.owner | dump}}
+  definition:
+    $text: ./openapi.yaml

@@ -1,0 +1,23 @@
+{{- with .Values.route }}
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  annotations:
+    "helm.sh/hook": post-install,post-upgrade
+  labels:
+    {{- include "springboot-template.labels" $ | nindent 4 }}
+  name: {{ include "springboot-template.fullname" $ }}
+spec:
+  {{- if .host }}
+  host: {{ .host }}
+  {{- end }}
+  {{- if .path }}
+  path: {{ .path }}
+  {{- end }}
+  port:
+    targetPort: {{ $.Values.service.port }}
+  to:
+    kind: Service
+    name: {{ include "springboot-template.fullname" $ }}
+  wildcardPolicy: None
+{{- end }}

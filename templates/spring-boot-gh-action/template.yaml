@@ -1,12 +1,12 @@
 apiVersion: scaffolder.backstage.io/v1beta3
 kind: Template
 metadata:
-  name: quarkus-service-github-actions
-  title: Quarkus Service with ArgoCD and GitHub Action Pipeline
-  description: Create a simple microservice using Quarkus with ArgoCD and GitHub Action
+  name: spring-boot-service-github-actions
+  title: Create a Spring Boot Service with ArgoCD and GitHub Action Pipeline
+  description: Create a simple microservice using Spring Boot with ArgoCD and GitHub Action
   tags:
     - recommended
-    - quarkus
+    - spring-boot
     - java
     - maven
     - ghaction
@@ -72,14 +72,14 @@ spec:
         artifactId:
           title: Artifact ID
           type: string
-          default: quarkusapp
+          default: spring-boot-app
           description: Maven Artifact ID
         javaPackageName:
           title: Java Package Namespace
           type: string
-          default: io/janus/quarkusapp
+          default: io/janus/spring-boot-app
           description: Name for the Java Package (ensure to use the / character as this is used for folder structure) should match Group ID and Artifact ID
-    - title: Provide information about the Continuous Integration
+    - title: Provide information about the CI method
       required:
         - ci
         - repoUrl
@@ -154,7 +154,7 @@ spec:
         defaultBranch: main
         repoVisibility: public
         protectDefaultBranch: false
-  
+      
     - id: sleep
       name: sleep 2 seconds
       action: roadiehq:utils:sleep
@@ -189,7 +189,7 @@ spec:
           image_organization: demo-docker
           image_name: ${{ parameters.repoName }}
           port: 8080
-          deployment_name: quarkus-template
+          deployment_name: springboot-template
         targetPath: ./tenant-gitops
 
     - id: publish-gitops
