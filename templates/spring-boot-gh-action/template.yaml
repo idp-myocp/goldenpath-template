@@ -5,7 +5,6 @@ metadata:
   title: Create a Spring Boot Service with ArgoCD and GitHub Action Pipeline
   description: Create a simple microservice using Spring Boot with ArgoCD and GitHub Action
   tags:
-    - recommended
     - springboot
     - java
     - maven
