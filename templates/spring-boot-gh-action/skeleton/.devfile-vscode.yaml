@@ -1,78 +1,60 @@
-schemaVersion: 2.1.0
+schemaVersion: 2.2.0
 metadata:
   generateName: ${{values.artifactId}}
-attributes:
-  controller.devfile.io/storage-type: ephemeral
+  attributes:
+    controller.devfile.io/storage-type: ephemeral
+  displayName: Spring Boot®
+  description: Spring Boot® using Maven
+  icon: https://raw.githubusercontent.com/devfile-samples/devfile-stack-icons/main/spring.svg
+  tags:
+    - Java
+    - Spring
+  projectType: springboot
+
 components:
-  -
-    type: chePlugin
-    id: redhat/java/latest
-    memoryLimit: 1512Mi
-  -
-    type: dockerimage
-    alias: tools
-    image: quay.io/eclipse/che-java8-maven:nightly
-    env:
-      - name: MAVEN_CONFIG
-        value: ""
-      - name: JAVA_OPTS
-        value: "-XX:MaxRAMPercentage=50.0 -XX:+UseParallelGC -XX:MinHeapFreeRatio=10
-          -XX:MaxHeapFreeRatio=20 -XX:GCTimeRatio=4 -XX:AdaptiveSizePolicyWeight=90
-          -Dsun.zip.disableMemoryMapping=true -Xms20m -Djava.security.egd=file:/dev/./urandom
-          -Duser.home=/home/user"
-      - name: MAVEN_OPTS
-        value: $(JAVA_OPTS)
-    memoryLimit: 768Mi
-    endpoints:
-      - name: '8080/tcp'
-        port: 8080
-    mountSources: true
-    volumes:
-      - name: m2
-        containerPath: /home/user/.m2
+  - name: tools
+    container:
+      image: registry.access.redhat.com/ubi8/openjdk-11:1.19-4.1715070694
+      command: ["tail", "-f", "/dev/null"]
+      memoryLimit: 768Mi
+      mountSources: true
+      endpoints:
+        - name: http-springboot
+          targetPort: 8080
+        - exposure: none
+          name: debug
+          targetPort: 5858
+      volumeMounts:
+        - name: m2
+          path: /home/user/.m2
+      env:
+        - name: DEBUG_PORT
+          value: "5858"
+  - name: m2
+    volume:
+      size: 3Gi
 commands:
-  -
-    name: maven build
-    actions:
-      -
-        type: exec
-        component: tools
-        command: "mvn clean install"
-        workdir: ${CHE_PROJECTS_ROOT}/${{values.artifactId}}
-  - name: run webapp
-    actions:
-      -
-        type: exec
-        component: tools
-        command: "mvn spring-boot:run"
-        workdir: ${CHE_PROJECTS_ROOT}/${{values.artifactId}}
-  - name: stop webapp
-    actions:
-      -
-        type: exec
-        component: tools
-        command: "echo 'Stopping the application...' && kill $(pidof java) && echo 'The application has been successfully stopped'"
-  - name: run webapp (debug mode)
-    actions:
-      -
-        type: exec
-        component: tools
-        command: |
-          java -jar -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=5005 \
-          target/*.jar
-        workdir: ${CHE_PROJECTS_ROOT}/${{values.artifactId}}
-  - name: Debug remote java application
-    actions:
-      - type: vscode-launch
-        referenceContent: |
-          {
-          "version": "0.2.0",
-          "configurations": [
-            {
-              "type": "java",
-              "name": "Debug (Attach) - Remote",
-              "request": "attach",
-              "hostName": "localhost",
-              "port": 5005
-            }]
-          }
+  - id: build
+    exec:
+      component: tools
+      workingDir: ${PROJECT_SOURCE}
+      commandLine: "mvn clean -Dmaven.repo.local=/home/user/.m2/repository package -Dmaven.test.skip=true"
+      group:
+        kind: build
+        isDefault: true
+  - id: run
+    exec:
+      component: tools
+      workingDir: ${PROJECT_SOURCE}
+      commandLine: "mvn -Dmaven.repo.local=/home/user/.m2/repository spring-boot:run"
+      group:
+        kind: run
+        isDefault: true
+  - id: debug
+    exec:
+      component: tools
+      workingDir: ${PROJECT_SOURCE}
+      commandLine: "java -Xdebug -Xrunjdwp:server=y,transport=dt_socket,address=${DEBUG_PORT},suspend=n -jar target/*.jar"
+      group:
+        kind: debug
+        isDefault: true
