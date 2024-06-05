@@ -10,7 +10,7 @@ metadata:
     backstage.io/kubernetes-namespace: ${{values.repoName}}-dev
     argocd/app-name: ${{values.repoName}}-dev
     github.com/project-slug: ${{values.githubOrg}}/${{values.repoName}}
-    backstage.io/techdocs-ref: dir:.
+    backstage.io/techdocs-ref: url:https://github.com/${{values.githubOrg}}/${{values.repoName}}
     jira/project-key: ISSUEBD
     sonarqube.org/project-key: ${{values.repoName}}
     jfrog-artifactory/image-name: ${{values.repoName}}
