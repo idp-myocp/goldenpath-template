@@ -1,14 +1,11 @@
-FROM registry.access.redhat.com/ubi8/openjdk-11:1.11
+#Build stage
+FROM maven:3.6.3-openjdk-17-slim AS build
+COPY src /home/app/src
+COPY pom.xml /home/app
+RUN mvn -f /home/app/pom.xml clean install
 
-WORKDIR /app
-
-COPY .mvn/ .mvn
-COPY mvnw pom.xml ./
-RUN ./mvnw dependency:resolve
-
-COPY src ./src
-
-ENV PORT ${{ values.port }}
-EXPOSE ${{ values.port }}
-
-CMD ["./mvnw", "spring-boot:run"]
+# Package stage
+FROM openjdk:17
+COPY --from=build /home/app/target/*.jar app.jar
+EXPOSE 8080
+ENTRYPOINT ["java", "-jar", "app.jar"]
